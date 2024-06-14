@@ -1,15 +1,23 @@
-const Task = require('../model/task');
+const Task = require('../model/Task');
 
-// Update task status
-exports.updateTaskStatus = (req, res) => {
-  Task.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true })
-    .then(task => res.json(task))
-    .catch(err => res.status(400).json({ error: err.message }));
+const tasksController = {
+  updateTaskStatus: async (req, res) => {
+    try {
+      const task = await Task.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true });
+      res.json(task);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+
+  selfAssessTask: async (req, res) => {
+    try {
+      const task = await Task.findByIdAndUpdate(req.params.id, { selfAssessment: req.body.selfAssessment }, { new: true });
+      res.json(task);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  }
 };
 
-// Submit self-assessment for a task
-exports.selfAssessTask = (req, res) => {
-  Task.findByIdAndUpdate(req.params.id, { selfAssessment: req.body.selfAssessment }, { new: true })
-    .then(task => res.json(task))
-    .catch(err => res.status(400).json({ error: err.message }));
-};
+module.exports = tasksController;

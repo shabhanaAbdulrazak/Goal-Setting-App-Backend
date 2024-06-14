@@ -1,44 +1,60 @@
-const Goal = require('../model/goal');
+const Goal = require('../model/Goal');
 
-// Save a new goal sheet
-exports.createGoal = (req, res) => {
-  const newGoal = new Goal(req.body);
-  newGoal.save()
-    .then(goal => res.status(201).json(goal))
-    .catch(err => res.status(400).json({ error: err.message }));
+const goalsController = {
+  createGoal: async (req, res) => {
+    const newGoal = new Goal(req.body);
+    try {
+      const goal = await newGoal.save();
+      res.status(201).json(goal);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+
+  submitGoal: async (req, res) => {
+    try {
+      const goal = await Goal.findByIdAndUpdate(req.params.id, { status: 'submitted' }, { new: true });
+      res.json(goal);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+
+  getGoals: async (req, res) => {
+    try {
+      const goals = await Goal.find({ employeeId: req.user.id });
+      res.json(goals);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+
+  getGoal: async (req, res) => {
+    try {
+      const goal = await Goal.findById(req.params.id);
+      res.json(goal);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+
+  editGoal: async (req, res) => {
+    try {
+      const goal = await Goal.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      res.json(goal);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+
+  resubmitGoal: async (req, res) => {
+    try {
+      const goal = await Goal.findByIdAndUpdate(req.params.id, { status: 'resubmitted' }, { new: true });
+      res.json(goal);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  }
 };
 
-// Submit a goal sheet for approval
-exports.submitGoal = (req, res) => {
-  Goal.findByIdAndUpdate(req.params.id, { status: 'submitted' }, { new: true })
-    .then(goal => res.json(goal))
-    .catch(err => res.status(400).json({ error: err.message }));
-};
-
-// Fetch all goal sheets for the logged-in employee
-exports.getGoals = (req, res) => {
-  Goal.find({ employeeId: req.user.id })
-    .then(goals => res.json(goals))
-    .catch(err => res.status(400).json({ error: err.message }));
-};
-
-// Fetch details of a specific goal sheet
-exports.getGoal = (req, res) => {
-  Goal.findById(req.params.id)
-    .then(goal => res.json(goal))
-    .catch(err => res.status(400).json({ error: err.message }));
-};
-
-// Edit a goal sheet
-exports.editGoal = (req, res) => {
-  Goal.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    .then(goal => res.json(goal))
-    .catch(err => res.status(400).json({ error: err.message }));
-};
-
-// Resubmit a corrected goal sheet for approval
-exports.resubmitGoal = (req, res) => {
-  Goal.findByIdAndUpdate(req.params.id, { status: 'resubmitted' }, { new: true })
-    .then(goal => res.json(goal))
-    .catch(err => res.status(400).json({ error: err.message }));
-};
+module.exports = goalsController;

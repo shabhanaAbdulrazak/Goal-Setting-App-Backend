@@ -1,6 +1,7 @@
-// Fetch employee dashboard data
-exports.getDashboard = (req, res) => {
-    // Logic to fetch and return dashboard data
+const dashboardController = {
+  getDashboard: (req, res) => {
     res.send('Employee dashboard data');
-  };
-  
+  }
+};
+
+module.exports = dashboardController;

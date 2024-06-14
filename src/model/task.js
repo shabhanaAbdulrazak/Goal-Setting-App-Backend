@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
-  // Define your task schema here
   name: String,
   description: String,
   status: { type: String, enum: ['not started', 'in progress', 'completed'] },
