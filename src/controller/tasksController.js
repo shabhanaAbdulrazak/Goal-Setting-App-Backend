@@ -1,23 +1,51 @@
-const Task = require('../model/Task');
+const Dashboard = require('../model/dashboard');
 
-const tasksController = {
-  updateTaskStatus: async (req, res) => {
+const dashboardController = {
+  getUserData: async (req, res) => {
     try {
-      const task = await Task.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true });
-      res.json(task);
+      const user = await Dashboard.findById(req.user.id).select('-password');
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  createUserData: async (req, res) => {
+    const newDashboard = new Dashboard(req.body);
+    try {
+      const user = await newDashboard.save();
+      res.status(201).json(user);
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
   },
 
-  selfAssessTask: async (req, res) => {
+  updateUserData: async (req, res) => {
     try {
-      const task = await Task.findByIdAndUpdate(req.params.id, { selfAssessment: req.body.selfAssessment }, { new: true });
-      res.json(task);
+      const user = await Dashboard.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      res.json(user);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+
+  getUserDataById: async (req, res) => {
+    try {
+      const user = await Dashboard.findById(req.params.id);
+      res.json(user);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+
+  deleteUserData: async (req, res) => {
+    try {
+      await Dashboard.findByIdAndDelete(req.params.id);
+      res.json({ message: 'Data deleted successfully' });
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
   }
 };
 
-module.exports = tasksController;
+module.exports = dashboardController;

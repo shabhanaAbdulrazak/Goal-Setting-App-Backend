@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
-  name: String,
+  userName: String,
+  title:String,
   description: String,
   status: { type: String, enum: ['not started', 'in progress', 'completed'] },
   selfAssessment: String,

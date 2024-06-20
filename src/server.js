@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const app = require('./app');
 
 // Load environment variables from .env file
-dotenv.config();
+require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://shabhana:root@gsa.v4wqp4c.mongodb.net/';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/';
 
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
